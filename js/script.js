@@ -307,12 +307,12 @@ let allCards = [
 
 let cards = [];
 
-for (i = 0; i < gridSize / 2; i++) {
+for (i = 0; i < gridSize / 2; i++) { // Массив используемых карт в сетке (каждой по две)
     cards.push(allCards[i]);
     cards.push(allCards[i]);
 }
 
-cards.sort(() => Math.random() - 0.5);
+cards.sort(() => Math.random() - 0.5); // Перемешиваем
 
 function generateGrid() {
     let grid = document.getElementById('grid');
@@ -322,8 +322,8 @@ function generateGrid() {
         grid.appendChild(griddiv);
 
         let griddivImgfront = document.createElement('img');
-        griddivImgfront.setAttribute('src', cards[i].img);
         griddivImgfront.setAttribute('class', 'front-card');
+        griddivImgfront.setAttribute('src', cards[i].img);
         griddivImgfront.setAttribute('data-id', cards[i].id);
         griddiv.appendChild(griddivImgfront);
 
