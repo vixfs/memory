@@ -1,6 +1,8 @@
 const sizeX = 3;
 const sizeY = 4;
 const gridSize = sizeX * sizeY;
+const timeRembemer = 1000;
+
 
 allCards.sort(() => Math.random() - 0.5); // Перемешиваем все карты
 
@@ -13,16 +15,25 @@ for (i = 0; i < gridSize / 2; i++) { // Массив используемых к
 
 cards.sort(() => Math.random() - 0.5); // Перемешиваем используемые карты вместе с парами
 
+
+function preloadImage(url)
+{
+    var img = new Image();
+    img.src = url;
+}
+
+preloadImage('img/cardBack.png');
+
 function generateGrid() {
     let grid = document.getElementById('grid');
     for (let i = 0; i < gridSize; i ++) {
         let griddiv = document.createElement('div');
-        griddiv.setAttribute('class', 'game-card');
+        griddiv.setAttribute('class', 'game-card flip');
         grid.appendChild(griddiv);
 
         let griddivImgfront = document.createElement('img');
-        griddivImgfront.setAttribute('class', 'front-card');
         griddivImgfront.setAttribute('src', cards[i].img);
+        griddivImgfront.setAttribute('class', 'front-card');
         griddivImgfront.setAttribute('data-id', cards[i].id);
         griddiv.appendChild(griddivImgfront);
 
@@ -30,11 +41,14 @@ function generateGrid() {
         griddivImgback.setAttribute('src', 'img/cardBack.png');
         griddivImgback.setAttribute('class', 'back-card');
         griddiv.appendChild(griddivImgback);
+
+        preloadImage(cards[i].img);
     }         
 };
 
 
-function updateGrid(){
+
+function updateSizeGrid(){
     if(((window.innerHeight - 100) / sizeY) > ((window.innerWidth - 40) / sizeX)){
         $("#grid").css({
             "grid-template-rows": `repeat( ${sizeY}, calc((100vw - 40px) / ${sizeX}) )`,
@@ -48,41 +62,14 @@ function updateGrid(){
     }
 };
 
+
+
 generateGrid();
-updateGrid();
+updateSizeGrid();
 
 $(window).resize(function(){
-    updateGrid();
+    updateSizeGrid();
 });
-
-/*
-function(){
-    var frag = '';
-    this.$cards.each(function(k, v){
-        frag += '<div class="game-card" data-id="'+ v.id +'">\
-        <div class="front-card"><img src="'+ v.img +'"\></div>\
-        <div class="back-card"><img src="img/cardBack.png"\
-        /></div>\
-        </div>';
-    });
-    return frag;
-}
-
-function(array){
-    let counter = array.length, temp, index;
-    while (counter > 0) {
-        index = Math.floor(Math.random() * counter);
-        counter--;
-        temp = array[counter];
-        array[counter] = array[index];
-        array[index] = temp;
-    }
-    return array;
-},
-*/
-
-
-
 
             
 const divCards = document.querySelectorAll('.game-card');
@@ -91,4 +78,9 @@ function flipCard() {
     this.classList.toggle('flip');
 }
 
+setTimeout(function() {
+    $('.game-card').toggleClass('flip');
+}, timeRembemer);
+
+/*divCards.forEach(card => card.addEventListener('DOMContentLoaded', flipCard));*/
 divCards.forEach(card => card.addEventListener('click', flipCard));
