@@ -1,19 +1,23 @@
-const sizeX = 3;
-const sizeY = 4;
+const sizeX = 2;
+const sizeY = 3;
 const gridSize = sizeX * sizeY;
-const timeForRembemer = 1000;
+const timeForRembemer = 3000;
 const timeBeforeUnflip = 800;
+const pointsForFound = 100;
+const pointsForFail = 50;
+let points = 0;
 
 allCards.sort(() => Math.random() - 0.5); // Перемешиваем все карты
 
 let cards = [];
 
-for (i = 0; i < gridSize / 2; i++) { // Массив используемых карт в сетке (каждой по две)
+for (let i = 0; i < gridSize / 2; i++) { // Массив используемых карт в сетке (каждой по две)
     cards.push(allCards[i]);
     cards.push(allCards[i]);
 }
 
 cards.sort(() => Math.random() - 0.5); // Перемешиваем используемые карты вместе с парами
+
 
 function generateGrid() {
     let grid = document.getElementById('grid');
@@ -36,6 +40,16 @@ function generateGrid() {
     }         
 };
 
+function generateHUD(){
+    document.getElementById('points');
+    let pointsSpan = document.getElementById('points').getElementsByTagName('span')[0];
+    pointsSpan.innerHTML = points;
+    document.getElementById('points').appendChild(pointsSpan);
+};
+
+function updatePoints(){
+    document.getElementById('points').getElementsByTagName('span')[0].innerHTML = points;
+};
 
 
 function updateSizeGrid(){
@@ -55,6 +69,7 @@ function updateSizeGrid(){
 
 generateGrid();
 updateSizeGrid();
+generateHUD();
 
 $(window).resize(function(){
     updateSizeGrid();
@@ -66,6 +81,7 @@ const htmlCards = document.querySelectorAll('.game-card');
 let flippedCard = false;
 let lockBoard = false;
 let firstCard, secondCard;
+let countDisabledCards = 0;
 
 function flipCard() {
     if (lockCards) {return;}
@@ -87,8 +103,8 @@ function flipCard() {
 
 function checkForDoublet() {
     let isMatch = firstCard.dataset.id === secondCard.dataset.id;
-    if (isMatch){
-            disableCards()
+    if (isMatch) {
+            disableCards();
         } else{
             unflipCards();
         }
@@ -98,6 +114,12 @@ function checkForDoublet() {
 function disableCards() {
     firstCard.removeEventListener('click', flipCard);
     secondCard.removeEventListener('click', flipCard);
+    
+    points += pointsForFound;
+    countDisabledCards += 2;
+    if(countDisabledCards === gridSize){
+        gameWon();
+    }
 
     resetBoard();
 }
@@ -106,6 +128,8 @@ function unflipCards() {
     setTimeout(() => {
         firstCard.classList.remove('flip');
         secondCard.classList.remove('flip');
+
+        points -= pointsForFail;
 
         resetBoard();
 
@@ -117,14 +141,18 @@ function resetBoard() {
     lockCards = false;
     firstCard = null;
     secondCard = null;
+    updatePoints();
+}
+
+function gameWon() {
+    setTimeout(function(){
+        alert('YOU WON!');
+    }, 500)  
 }
 
 setTimeout(function() {
     $('.game-card').removeClass('flip');
-
     resetBoard();
+    htmlCards.forEach(card => card.addEventListener('click', flipCard));
 
 }, timeForRembemer);
-
-/*divCards.forEach(card => card.addEventListener('DOMContentLoaded', flipCard));*/
-htmlCards.forEach(card => card.addEventListener('click', flipCard));

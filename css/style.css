@@ -40,3 +40,7 @@
 .game-card.flip {
     transform: rotateY(180deg);
 }
+
+#points{
+    text-align: center;
+}
