@@ -44,3 +44,13 @@
 #points{
     text-align: center;
 }
+
+.hidden .front-card{
+    /*visibility: hidden;*/
+    transition: opacity 0.5s ease-in-out;
+    opacity: 0;
+}
+
+.hidden .back-card{
+    visibility: hidden;
+}

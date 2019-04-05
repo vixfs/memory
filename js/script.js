@@ -1,11 +1,14 @@
-const sizeX = 2;
-const sizeY = 3;
+const sizeX = 4;
+const sizeY = 6;
 const gridSize = sizeX * sizeY;
+
 const timeForRembemer = 3000;
 const timeBeforeUnflip = 800;
+
 const pointsForFound = 100;
 const pointsForFail = 50;
 let points = 0;
+
 
 allCards.sort(() => Math.random() - 0.5); // Перемешиваем все карты
 
@@ -105,24 +108,35 @@ function checkForDoublet() {
     let isMatch = firstCard.dataset.id === secondCard.dataset.id;
     if (isMatch) {
             disableCards();
+            addPoints();
+            
         } else{
             unflipCards();
-        }
-        
-}
+        }         
+};
 
 function disableCards() {
-    firstCard.removeEventListener('click', flipCard);
-    secondCard.removeEventListener('click', flipCard);
-    
-    points += pointsForFound;
-    countDisabledCards += 2;
-    if(countDisabledCards === gridSize){
-        gameWon();
-    }
+    setTimeout(() => {
+        firstCard.removeEventListener('click', flipCard);
+        secondCard.removeEventListener('click', flipCard);
 
-    resetBoard();
-}
+        firstCard.setAttribute('class' , 'game-card flip hidden');
+        secondCard.setAttribute('class' , 'game-card flip hidden');
+
+        countDisabledCards += 2;
+
+        if(countDisabledCards === gridSize){
+            gameWon();
+        };
+
+        resetBoard();
+    }, 500);  
+};
+
+function addPoints(){
+    points += pointsForFound;
+};
+
 
 function unflipCards() {
     setTimeout(() => {
@@ -134,7 +148,7 @@ function unflipCards() {
         resetBoard();
 
     }, timeBeforeUnflip);
-}
+};
 
 function resetBoard() {
     flippedCard = false;
@@ -142,13 +156,13 @@ function resetBoard() {
     firstCard = null;
     secondCard = null;
     updatePoints();
-}
+};
 
 function gameWon() {
     setTimeout(function(){
         alert('YOU WON!');
     }, 500)  
-}
+};
 
 setTimeout(function() {
     $('.game-card').removeClass('flip');
